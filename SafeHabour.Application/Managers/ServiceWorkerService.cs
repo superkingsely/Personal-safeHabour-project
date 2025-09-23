@@ -160,6 +160,28 @@ public class ServiceWorkerService : IServiceWorkerService
             return ServiceResult.FailureResult("Search term cannot exceed 500 characters");
         }
 
+        // Validate service names list
+        if (request.ServiceNames != null && request.ServiceNames.Count > 20)
+        {
+            return ServiceResult.FailureResult("Cannot filter by more than 20 service names at once");
+        }
+
+        if (request.ServiceNames != null && request.ServiceNames.Any(s => !string.IsNullOrWhiteSpace(s) && s.Length > 100))
+        {
+            return ServiceResult.FailureResult("Service names cannot exceed 100 characters each");
+        }
+
+        // Validate languages list
+        if (request.Languages != null && request.Languages.Count > 10)
+        {
+            return ServiceResult.FailureResult("Cannot filter by more than 10 languages at once");
+        }
+
+        if (request.Languages != null && request.Languages.Any(l => !string.IsNullOrWhiteSpace(l) && l.Length > 50))
+        {
+            return ServiceResult.FailureResult("Language names cannot exceed 50 characters each");
+        }
+
         return ServiceResult.SuccessResult("Validation passed");
     }
 

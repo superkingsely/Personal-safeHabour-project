@@ -6,9 +6,8 @@ Content-Type: application/json
   "page": 1,
   "pageSize": 10,
   "searchTerm": "",
-  "serviceCategory": null,
-  "serviceName": null,
-  "languageCode": null,
+  "serviceNames": [],
+  "languages": [],
   "minHourlyRate": null,
   "maxHourlyRate": null,
   "latitude": null,
@@ -29,9 +28,8 @@ Content-Type: application/json
   "page": 1,
   "pageSize": 10,
   "searchTerm": "cleaning",
-  "serviceCategory": "Cleaning",
-  "serviceName": "House Cleaning",
-  "languageCode": "en",
+  "serviceNames": ["House Cleaning", "Window Cleaning", "Deep Cleaning"],
+  "languages": ["English", "Spanish"],
   "minHourlyRate": 15.00,
   "maxHourlyRate": 50.00,
   "latitude": 51.5074,
@@ -44,6 +42,28 @@ Content-Type: application/json
   "availableOnly": true
 }
 
+### Search Service Workers - Multiple Services Search
+POST {{SafeHabour.API_HostAddress}}/api/serviceworkers/search
+Content-Type: application/json
+
+{
+  "page": 1,
+  "pageSize": 15,
+  "searchTerm": "",
+  "serviceNames": ["Babysitting", "Pet Care", "Tutoring"],
+  "languages": ["English", "French", "German"],
+  "minHourlyRate": null,
+  "maxHourlyRate": null,
+  "latitude": null,
+  "longitude": null,
+  "radiusKm": 50.0,
+  "sortBy": "HourlyRate",
+  "sortDirection": "Ascending",
+  "minRating": null,
+  "verifiedOnly": null,
+  "availableOnly": true
+}
+
 ### Search Service Workers - Rate-based Search
 POST {{SafeHabour.API_HostAddress}}/api/serviceworkers/search
 Content-Type: application/json
@@ -52,9 +72,8 @@ Content-Type: application/json
   "page": 1,
   "pageSize": 20,
   "searchTerm": "",
-  "serviceCategory": null,
-  "serviceName": null,
-  "languageCode": null,
+  "serviceNames": [],
+  "languages": [],
   "minHourlyRate": 20.00,
   "maxHourlyRate": 40.00,
   "latitude": null,
@@ -75,9 +94,8 @@ Content-Type: application/json
   "page": 1,
   "pageSize": 10,
   "searchTerm": "john",
-  "serviceCategory": null,
-  "serviceName": null,
-  "languageCode": null,
+  "serviceNames": [],
+  "languages": [],
   "minHourlyRate": null,
   "maxHourlyRate": null,
   "latitude": null,

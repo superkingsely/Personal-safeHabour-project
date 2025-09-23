@@ -10,10 +10,6 @@ public class SearchServiceWorkersRequest
     [Range(1, int.MaxValue, ErrorMessage = "Page must be greater than 0")]
     public int Page { get; set; } = 1;
 
-    /// <summary>
-    /// Number of items per page
-    /// </summary>
-    [Range(1, 100, ErrorMessage = "Page size must be between 1 and 100")]
     public int PageSize { get; set; } = 10;
 
     /// <summary>
@@ -23,22 +19,14 @@ public class SearchServiceWorkersRequest
     public string? SearchTerm { get; set; }
 
     /// <summary>
-    /// Filter by specific service category
+    /// Filter by specific service names
     /// </summary>
-    [StringLength(50)]
-    public string? ServiceCategory { get; set; }
+    public List<string> ServiceNames { get; set; } = new();
 
     /// <summary>
-    /// Filter by specific service name
+    /// Filter by languages
     /// </summary>
-    [StringLength(100)]
-    public string? ServiceName { get; set; }
-
-    /// <summary>
-    /// Filter by language code (e.g., "en", "fr")
-    /// </summary>
-    [StringLength(20)]
-    public string? LanguageCode { get; set; }
+    public List<string> Languages { get; set; } = new();
 
     /// <summary>
     /// Minimum hourly rate filter

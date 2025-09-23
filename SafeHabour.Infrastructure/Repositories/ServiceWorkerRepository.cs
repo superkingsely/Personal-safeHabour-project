@@ -184,22 +184,36 @@ public class ServiceWorkerRepository : IServiceWorkerRepository
                     sw.ServicesJson.ToLower().Contains(searchTerm));
             }
 
-            // Apply service category filter
-            if (!string.IsNullOrEmpty(searchRequest.ServiceCategory))
+            // Apply service names filter (multiple services)
+            if (searchRequest.ServiceNames != null && searchRequest.ServiceNames.Any())
             {
-                query = query.Where(sw => sw.ServicesJson.ToLower().Contains($"\"category\":\"{searchRequest.ServiceCategory.ToLower()}\""));
+                var serviceConditions = searchRequest.ServiceNames
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .Select(serviceName => $"\"name\":\"{serviceName.ToLower()}\"")
+                    .ToList();
+
+                if (serviceConditions.Any())
+                {
+                    // Service worker must have at least one of the specified services
+                    query = query.Where(sw => serviceConditions.Any(condition => 
+                        sw.ServicesJson.ToLower().Contains(condition)));
+                }
             }
 
-            // Apply service name filter
-            if (!string.IsNullOrEmpty(searchRequest.ServiceName))
+            // Apply languages filter (multiple languages)
+            if (searchRequest.Languages != null && searchRequest.Languages.Any())
             {
-                query = query.Where(sw => sw.ServicesJson.ToLower().Contains($"\"name\":\"{searchRequest.ServiceName.ToLower()}\""));
-            }
+                var languageConditions = searchRequest.Languages
+                    .Where(l => !string.IsNullOrWhiteSpace(l))
+                    .Select(language => $"\"name\":\"{language.ToLower()}\"")
+                    .ToList();
 
-            // Apply language filter
-            if (!string.IsNullOrEmpty(searchRequest.LanguageCode))
-            {
-                query = query.Where(sw => sw.LanguagesJson.ToLower().Contains($"\"code\":\"{searchRequest.LanguageCode.ToLower()}\""));
+                if (languageConditions.Any())
+                {
+                    // Service worker must speak at least one of the specified languages
+                    query = query.Where(sw => languageConditions.Any(condition => 
+                        sw.LanguagesJson.ToLower().Contains(condition)));
+                }
             }
 
             // Apply hourly rate filters
