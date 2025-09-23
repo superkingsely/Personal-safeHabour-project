@@ -1,0 +1,133 @@
+###
+# SafeHabour Super Admin API Endpoints
+# Base URL: https://localhost:7185 (or your configured URL)
+# NOTE: All endpoints require SuperAdmin role authentication
+
+###
+# Get paginated list of users with search and filters
+GET {{host}}/api/superadmin/users?pageNumber=1&pageSize=10&searchTerm=john&isProfileComplete=true&isProfileApproved=false
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Get paginated list of users - all users
+GET {{host}}/api/superadmin/users?pageNumber=1&pageSize=20
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Get users filtered by user type
+GET {{host}}/api/superadmin/users?pageNumber=1&pageSize=10&userType=client
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Get users filtered by approval status
+GET {{host}}/api/superadmin/users?pageNumber=1&pageSize=10&isProfileApproved=false
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Get users filtered by date range
+GET {{host}}/api/superadmin/users?pageNumber=1&pageSize=10&createdFrom=2025-01-01&createdTo=2025-12-31
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Get specific user by ID
+GET {{host}}/api/superadmin/users/{{userId}}
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Approve multiple users
+PUT {{host}}/api/superadmin/users/approve
+Authorization: Bearer {{superAdminToken}}
+Content-Type: application/json
+
+{
+  "userIds": [
+    "user-guid-1",
+    "user-guid-2",
+    "user-guid-3"
+  ],
+  "isApproved": true,
+  "reason": "Profile verification completed successfully"
+}
+
+###
+# Reject multiple users
+PUT {{host}}/api/superadmin/users/approve
+Authorization: Bearer {{superAdminToken}}
+Content-Type: application/json
+
+{
+  "userIds": [
+    "user-guid-4",
+    "user-guid-5"
+  ],
+  "isApproved": false,
+  "reason": "Incomplete documentation provided"
+}
+
+###
+# Get user statistics
+GET {{host}}/api/superadmin/statistics
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Bulk approve all pending users (with filters)
+PUT {{host}}/api/superadmin/users/bulk-approve
+Authorization: Bearer {{superAdminToken}}
+Content-Type: application/json
+
+{
+  "approveOnlyActiveUsers": true,
+  "approveOnlyCompleteProfiles": true,
+  "reason": "Bulk approval of verified users"
+}
+
+###
+# Bulk approve all pending users (no filters)
+PUT {{host}}/api/superadmin/users/bulk-approve
+Authorization: Bearer {{superAdminToken}}
+Content-Type: application/json
+
+{
+  "approveOnlyActiveUsers": false,
+  "approveOnlyCompleteProfiles": false,
+  "reason": "Emergency bulk approval"
+}
+
+###
+# Search users by email
+GET {{host}}/api/superadmin/users?searchTerm=example@email.com&pageNumber=1&pageSize=5
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Get unverified users
+GET {{host}}/api/superadmin/users?isVerified=false&pageNumber=1&pageSize=10
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Get inactive users
+GET {{host}}/api/superadmin/users?isActive=false&pageNumber=1&pageSize=10
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Get service workers only
+GET {{host}}/api/superadmin/users?userType=serviceworker&pageNumber=1&pageSize=10
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Get recently registered users (this week)
+GET {{host}}/api/superadmin/users?createdFrom=2025-09-16&pageNumber=1&pageSize=10
+Authorization: Bearer {{superAdminToken}}
+
+###
+# Variables (set these based on your environment)
+@host = https://localhost:7185
+@superAdminToken = your-super-admin-jwt-token-here
+@userId = user-guid-to-view
+
+###
+# Example workflow:
+# 1. First, get statistics to see overall system status
+# 2. Get pending users (isProfileApproved=false)
+# 3. Review specific users by ID
+# 4. Approve or reject users individually or in bulk
+# 5. Check statistics again to see the changes

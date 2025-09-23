@@ -1,0 +1,6 @@
+@SafeHabour.API_HostAddress = http://localhost:5244
+
+GET {{SafeHabour.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

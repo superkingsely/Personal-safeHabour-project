@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Status Update</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .logo {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #e8eaff;
+            font-size: 16px;
+            margin: 0;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .status-container {
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .status-approved {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .status-rejected {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        .status-pending {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+        .status-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .status-title {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .status-subtitle {
+            color: #ffffff;
+            font-size: 16px;
+            margin: 0;
+            opacity: 0.9;
+        }
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 20px 0;
+            color: #555555;
+        }
+        .highlight-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .next-steps {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .next-steps-title {
+            color: #0066cc;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .next-steps ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #333333;
+        }
+        .next-steps li {
+            margin-bottom: 8px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: transform 0.2s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: #ffffff;
+        }
+        .contact-support {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+            font-size: 14px;
+            text-align: center;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        .footer-text {
+            font-size: 14px;
+            color: #6c757d;
+            margin: 0 0 15px 0;
+        }
+        .company-info {
+            font-size: 12px;
+            color: #adb5bd;
+            margin: 0;
+        }
+        .support-link {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .support-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 0;
+                box-shadow: none;
+            }
+            .header, .content, .footer {
+                padding: 20px;
+            }
+            .status-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">SafeHarbour</div>
+            <p class="subtitle">Account Management System</p>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">Hello {{UserName}},</div>
+            
+            <div class="status-container {{StatusClass}}">
+                <div class="status-icon">{{StatusIcon}}</div>
+                <div class="status-title">{{StatusTitle}}</div>
+                <div class="status-subtitle">{{StatusSubtitle}}</div>
+            </div>
+            
+            <div class="message">{{Message}}</div>
+            
+            {{#if ShowNextSteps}}
+            <div class="next-steps">
+                <div class="next-steps-title">📋 What's Next?</div>
+                <ul>
+                    {{#each NextSteps}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+            
+            {{#if ShowHighlight}}
+            <div class="highlight-box">
+                <strong>{{HighlightTitle}}</strong><br>
+                {{HighlightMessage}}
+            </div>
+            {{/if}}
+            
+            {{#if ShowButton}}
+            <div style="text-align: center;">
+                <a href="{{ButtonUrl}}" class="cta-button">{{ButtonText}}</a>
+            </div>
+            {{/if}}
+            
+            <div class="contact-support">
+                <strong>Need Help?</strong> If you have any questions about your account status or need assistance, 
+                please don't hesitate to contact our support team.
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p class="footer-text">
+                For questions or support, contact us at 
+                <a href="mailto:support@safeharbour.com" class="support-link">support@safeharbour.com</a>
+            </p>
+            <p class="company-info">
+                © {{Year}} SafeHarbour. All rights reserved.<br>
+                This is an automated message, please do not reply to this email.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="SafeHabour.API/SafeHabour.API.csproj" />
+  <Project Path="SafeHabour.Application/SafeHabour.Application.csproj" />
+  <Project Path="SafeHabour.Data/SafeHabour.Data.csproj" />
+  <Project Path="SafeHabour.Infrastructure/SafeHabour.Infrastructure.csproj" />
+  <Project Path="SafeHabour.Models/SafeHabour.Models.csproj" />
+</Solution>

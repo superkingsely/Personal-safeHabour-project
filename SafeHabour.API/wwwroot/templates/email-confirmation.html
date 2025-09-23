@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your SafeHarbour Account</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .welcome-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .confirm-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confirm-button:hover {
+            background-color: #0056b3;
+        }
+        .alternative-link {
+            font-size: 14px;
+            color: #666;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            word-break: break-all;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        .security-note {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">SafeHarbour</div>
+            <h1 class="welcome-title">Welcome to SafeHarbour!</h1>
+        </div>
+        
+        <div class="message">
+            <p>Hello {{UserName}},</p>
+            <p>Thank you for creating your SafeHarbour account. To complete your registration and start using our platform, please confirm your email address by clicking the button below:</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="{{ConfirmationUrl}}" class="confirm-button">Confirm Email Address</a>
+        </div>
+        
+        <div class="alternative-link">
+            <strong>Can't click the button?</strong><br>
+            Copy and paste this link into your browser:<br>
+            <a href="{{ConfirmationUrl}}">{{ConfirmationUrl}}</a>
+        </div>
+        
+        <div class="security-note">
+            <strong>Security Note:</strong> This email confirmation link will expire in 24 hours for your security. If you didn't create an account with SafeHarbour, please ignore this email.
+        </div>
+        
+        <div class="footer">
+            <p>Best regards,<br>
+            The SafeHarbour Team</p>
+            
+            <p style="margin-top: 20px;">
+                <small>&copy; {{Year}} SafeHarbour. All rights reserved.</small>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

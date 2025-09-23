@@ -1,0 +1,152 @@
+###
+# SafeHabour Authentication API Endpoints
+# Base URL: https://localhost:7185 (or your configured URL)
+
+###
+# Login with email and password
+POST {{host}}/api/authentication/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "Password123!"
+}
+
+###
+# Register Client User
+POST {{host}}/api/authentication/register/client
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "phoneNumber": "+1234567890",
+  "password": "Password123!",
+  "clientType": "Individual"
+}
+
+###
+# Register Service Worker User
+POST {{host}}/api/authentication/register/service-worker
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "jane.smith@example.com",
+  "phoneNumber": "+1234567890",
+  "password": "Password123!",
+  "services": ["Cleaning", "Maintenance"],
+  "languages": ["English", "Spanish"],
+  "hourlyRate": 25.00,
+  "bio": "Experienced service worker with 5 years of experience."
+}
+
+###
+# Verify Two-Factor Code
+POST {{host}}/api/authentication/verify-two-factor
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "code": "123456"
+}
+
+###
+# Logout (requires authorization header)
+POST {{host}}/api/authentication/logout
+Authorization: Bearer {{token}}
+
+###
+# Refresh Token
+POST {{host}}/api/authentication/refresh
+Content-Type: application/json
+
+{
+  "token": "your-expired-jwt-token-here"
+}
+
+###
+# Confirm Email
+POST {{host}}/api/authentication/confirm-email
+Content-Type: application/json
+
+{
+  "userId": "user-guid-here",
+  "token": "email-confirmation-token-here"
+}
+
+###
+# Forgot Password
+POST {{host}}/api/authentication/forgot-password
+Content-Type: application/json
+
+{
+  "email": "user@example.com"
+}
+
+###
+# Reset Password
+POST {{host}}/api/authentication/reset-password
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "token": "password-reset-token-here",
+  "newPassword": "NewPassword123!"
+}
+
+###
+# Get Current User (requires authorization header)
+GET {{host}}/api/authentication/me
+Authorization: Bearer {{token}}
+
+###
+# Upload Verification Documents (requires authorization header)
+POST {{host}}/api/authentication/verify-documents
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="userPhysicalInformationType"
+
+UserIdentification
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="userPhysicalInformation"; filename="id-document.pdf"
+Content-Type: application/pdf
+
+(binary file content here)
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+# Update Notification Settings (requires authorization header)
+PUT {{host}}/api/authentication/notification-settings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notificationType": "BookingConfirmation",
+  "emailNotificationEnabled": true,
+  "inAppNotificationEnabled": true
+}
+
+###
+# Get Notification Settings (requires authorization header)
+GET {{host}}/api/authentication/notification-settings
+Authorization: Bearer {{token}}
+
+###
+# Update Two-Factor Settings (requires authorization header)
+PUT {{host}}/api/authentication/two-factor-settings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "enableTwoFactor": true
+}
+
+###
+# Variables (set these based on your environment)
+@host = https://localhost:7185
+@token = your-jwt-token-here

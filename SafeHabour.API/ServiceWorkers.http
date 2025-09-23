@@ -1,0 +1,128 @@
+### Search Service Workers - Basic Search
+POST {{SafeHabour.API_HostAddress}}/api/serviceworkers/search
+Content-Type: application/json
+
+{
+  "page": 1,
+  "pageSize": 10,
+  "searchTerm": "",
+  "serviceCategory": null,
+  "serviceName": null,
+  "languageCode": null,
+  "minHourlyRate": null,
+  "maxHourlyRate": null,
+  "latitude": null,
+  "longitude": null,
+  "radiusKm": 50.0,
+  "sortBy": "Distance",
+  "sortDirection": "Ascending",
+  "minRating": null,
+  "verifiedOnly": null,
+  "availableOnly": true
+}
+
+### Search Service Workers - Location-based Search (London coordinates)
+POST {{SafeHabour.API_HostAddress}}/api/serviceworkers/search
+Content-Type: application/json
+
+{
+  "page": 1,
+  "pageSize": 10,
+  "searchTerm": "cleaning",
+  "serviceCategory": "Cleaning",
+  "serviceName": "House Cleaning",
+  "languageCode": "en",
+  "minHourlyRate": 15.00,
+  "maxHourlyRate": 50.00,
+  "latitude": 51.5074,
+  "longitude": -0.1278,
+  "radiusKm": 25.0,
+  "sortBy": "Distance",
+  "sortDirection": "Ascending",
+  "minRating": 4,
+  "verifiedOnly": true,
+  "availableOnly": true
+}
+
+### Search Service Workers - Rate-based Search
+POST {{SafeHabour.API_HostAddress}}/api/serviceworkers/search
+Content-Type: application/json
+
+{
+  "page": 1,
+  "pageSize": 20,
+  "searchTerm": "",
+  "serviceCategory": null,
+  "serviceName": null,
+  "languageCode": null,
+  "minHourlyRate": 20.00,
+  "maxHourlyRate": 40.00,
+  "latitude": null,
+  "longitude": null,
+  "radiusKm": 50.0,
+  "sortBy": "HourlyRate",
+  "sortDirection": "Ascending",
+  "minRating": null,
+  "verifiedOnly": null,
+  "availableOnly": true
+}
+
+### Search Service Workers - By Name and Rating
+POST {{SafeHabour.API_HostAddress}}/api/serviceworkers/search
+Content-Type: application/json
+
+{
+  "page": 1,
+  "pageSize": 10,
+  "searchTerm": "john",
+  "serviceCategory": null,
+  "serviceName": null,
+  "languageCode": null,
+  "minHourlyRate": null,
+  "maxHourlyRate": null,
+  "latitude": null,
+  "longitude": null,
+  "radiusKm": 50.0,
+  "sortBy": "Rating",
+  "sortDirection": "Descending",
+  "minRating": 3,
+  "verifiedOnly": false,
+  "availableOnly": true
+}
+
+### Get Service Worker by ID
+GET {{SafeHabour.API_HostAddress}}/api/serviceworkers/1
+
+### Get Service Worker by User ID
+GET {{SafeHabour.API_HostAddress}}/api/serviceworkers/by-user/12345678-1234-1234-1234-123456789012
+
+### Get Profile Completion Status (Requires Authentication)
+GET {{SafeHabour.API_HostAddress}}/api/serviceworkers/profile-status/12345678-1234-1234-1234-123456789012
+Authorization: Bearer {{auth_token}}
+
+### Update Service Worker Profile (Requires Authentication)
+PUT {{SafeHabour.API_HostAddress}}/api/serviceworkers/update
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Authorization: Bearer {{auth_token}}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="UserId"
+
+12345678-1234-1234-1234-123456789012
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="FirstName"
+
+John
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="LastName"
+
+Doe
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="Bio"
+
+Experienced house cleaner with 5+ years of experience.
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="HourlyRate"
+
+25.50
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
