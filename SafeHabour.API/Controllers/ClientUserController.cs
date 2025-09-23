@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SafeHabour.Application.Interfaces;
 using SafeHabour.Models.Response;
 using SafeHabour.Models.Requests;
+using SafeHabour.Models.Enums;
 using System.Security.Claims;
 
 namespace SafeHabour.API.Controllers;
@@ -69,7 +70,7 @@ public class ClientUserController : ControllerBase
     /// <param name="userId">The user ID</param>
     /// <returns>Client user details</returns>
     [HttpGet("user/{userId}")]
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = UserType.SuperAdmin)]
     public async Task<IActionResult> GetClientUserByUserId(Guid userId)
     {
         try
@@ -100,7 +101,7 @@ public class ClientUserController : ControllerBase
     /// <param name="clientUserId">The client user ID</param>
     /// <returns>Client user details</returns>
     [HttpGet("{clientUserId}")]
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = UserType.SuperAdmin)]
     public async Task<IActionResult> GetClientUserById(int clientUserId)
     {
         try

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SafeHabour.Application.Interfaces;
 using SafeHabour.Models.Response;
 using SafeHabour.Models.Requests;
+using SafeHabour.Models.Enums;
 using System.Security.Claims;
 
 namespace SafeHabour.API.Controllers;
@@ -69,7 +70,7 @@ public class ServiceWorkerController : ControllerBase
     /// <param name="userId">The user ID</param>
     /// <returns>Service worker details</returns>
     [HttpGet("user/{userId}")]
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = UserType.SuperAdmin)]
     public async Task<IActionResult> GetServiceWorkerByUserId(Guid userId)
     {
         try
@@ -100,7 +101,7 @@ public class ServiceWorkerController : ControllerBase
     /// <param name="serviceWorkerId">The service worker ID</param>
     /// <returns>Service worker details</returns>
     [HttpGet("{serviceWorkerId}")]
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = UserType.SuperAdmin)]
     public async Task<IActionResult> GetServiceWorkerById(int serviceWorkerId)
     {
         try

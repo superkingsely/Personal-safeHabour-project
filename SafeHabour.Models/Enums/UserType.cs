@@ -8,7 +8,7 @@ public enum ClientType
 
 public class UserType
 {
-    public const string Admin = "Admin";
+    public const string SuperAdmin = "SuperAdmin";
     public const string ClientUser = "ClientUser";
     public const string ServiceWorker = "ServiceWorker";
 }

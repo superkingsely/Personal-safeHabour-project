@@ -12,6 +12,7 @@ using SafeHabour.Infrastructure.Interfaces;
 using SafeHabour.Infrastructure.Repositories;
 using SafeHabour.Models.Configuration;
 using SafeHabour.API.Extensions;
+using SafeHabour.Data.Seeders;
 using SendGrid;
 using System.Text;
 using Serilog;
@@ -216,6 +217,31 @@ app.MapControllers();
 
 // Map SignalR Hub
 app.MapHub<SafeHabour.Application.Hubs.NotificationHub>("/notificationHub");
+
+// Database seeding
+using (var scope = app.Services.CreateScope())
+{
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    try
+    {
+        if (app.Environment.IsDevelopment())
+        {
+            // Development: Seed all data (roles, users, etc.)
+            await DatabaseSeeder.SeedAllAsync(app.Services, logger);
+        }
+        else
+        {
+            // Production: Only seed roles
+            await DatabaseSeeder.SeedRolesOnlyAsync(app.Services, logger);
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while seeding the database");
+        // Don't throw here - let the app continue running even if seeding fails
+    }
+}
 
 try
 {

@@ -38,7 +38,7 @@ public class PushNotificationController : ControllerBase
     /// <param name="request">Custom notification request</param>
     /// <returns>Result of the notification</returns>
     [HttpPost("send-custom")]
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = UserType.SuperAdmin)]
     public async Task<ActionResult<ServiceResult<object>>> SendCustomNotification([FromBody] CustomNotificationRequest request)
     {
         try
