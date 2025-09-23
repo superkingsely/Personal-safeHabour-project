@@ -23,8 +23,9 @@ public class ServiceWorkerRepository : IServiceWorkerRepository
     /// Gets service worker details by user ID
     /// </summary>
     /// <param name="userId">The user ID</param>
+    /// <param name="baseUrl">Base URL for constructing complete profile picture URLs (optional)</param>
     /// <returns>ServiceWorkerDto if found, null otherwise</returns>
-    public async Task<ServiceWorkerDto?> GetServiceWorkerByUserIdAsync(Guid userId)
+    public async Task<ServiceWorkerDto?> GetServiceWorkerByUserIdAsync(Guid userId, string? baseUrl = null)
     {
         try
         {
@@ -35,7 +36,7 @@ public class ServiceWorkerRepository : IServiceWorkerRepository
             if (serviceWorkerUser == null)
                 return null;
 
-            return ServiceWorkerMapper.ToDtoWithUserDetails(serviceWorkerUser);
+            return ServiceWorkerMapper.ToDtoWithUserDetails(serviceWorkerUser, baseUrl);
         }
         catch
         {
@@ -47,8 +48,9 @@ public class ServiceWorkerRepository : IServiceWorkerRepository
     /// Gets service worker details by service worker ID
     /// </summary>
     /// <param name="serviceWorkerId">The service worker ID</param>
+    /// <param name="baseUrl">Base URL for constructing complete profile picture URLs (optional)</param>
     /// <returns>ServiceWorkerDto if found, null otherwise</returns>
-    public async Task<ServiceWorkerDto?> GetServiceWorkerByIdAsync(int serviceWorkerId)
+    public async Task<ServiceWorkerDto?> GetServiceWorkerByIdAsync(int serviceWorkerId, string? baseUrl = null)
     {
         try
         {
@@ -59,7 +61,7 @@ public class ServiceWorkerRepository : IServiceWorkerRepository
             if (serviceWorkerUser == null)
                 return null;
 
-            return ServiceWorkerMapper.ToDtoWithUserDetails(serviceWorkerUser);
+            return ServiceWorkerMapper.ToDtoWithUserDetails(serviceWorkerUser, baseUrl);
         }
         catch
         {
@@ -73,7 +75,7 @@ public class ServiceWorkerRepository : IServiceWorkerRepository
     /// <param name="request">The update service worker request</param>
     /// <param name="profilePicturePath">The relative path to the uploaded profile picture (optional)</param>
     /// <returns>Updated ServiceWorkerDto if successful, null otherwise</returns>
-    public async Task<ServiceWorkerDto?> UpdateServiceWorkerAsync(UpdateServiceWorkerRequest request, string? profilePicturePath = null)
+    public async Task<ServiceWorkerDto?> UpdateServiceWorkerAsync(UpdateServiceWorkerRequest request, string? profilePicturePath = null, string? baseUrl = null)
     {
         try
         {
@@ -148,7 +150,7 @@ public class ServiceWorkerRepository : IServiceWorkerRepository
             _context.ServiceWorkerUsers.Update(serviceWorkerUser);
             await _context.SaveChangesAsync();
 
-            return ServiceWorkerMapper.ToDtoWithUserDetails(serviceWorkerUser);
+            return ServiceWorkerMapper.ToDtoWithUserDetails(serviceWorkerUser, baseUrl);
         }
         catch
         {
@@ -161,8 +163,9 @@ public class ServiceWorkerRepository : IServiceWorkerRepository
     /// </summary>
     /// <param name="searchRequest">Search parameters</param>
     /// <param name="currentUserId">Current user ID for fallback location</param>
+    /// <param name="baseUrl">Base URL for constructing complete profile picture URLs (optional)</param>
     /// <returns>Paginated list of service workers</returns>
-    public async Task<PaginatedResponse<ServiceWorkerSearchResultDto>> SearchServiceWorkersAsync(SearchServiceWorkersRequest searchRequest, Guid? currentUserId = null)
+    public async Task<PaginatedResponse<ServiceWorkerSearchResultDto>> SearchServiceWorkersAsync(SearchServiceWorkersRequest searchRequest, Guid? currentUserId = null, string? baseUrl = null)
     {
         try
         {
@@ -271,7 +274,7 @@ public class ServiceWorkerRepository : IServiceWorkerRepository
 
             // Convert to DTOs
             var resultItems = paginatedItems.Select(item => 
-                MapToSearchResultDto(item.serviceWorker, item.distance)).ToList();
+                ServiceWorkerMapper.ToSearchResultDto(item.serviceWorker, item.distance, baseUrl)).ToList();
 
             return new PaginatedResponse<ServiceWorkerSearchResultDto>
             {
@@ -395,43 +398,5 @@ public class ServiceWorkerRepository : IServiceWorkerRepository
         };
 
         return query.ToList();
-    }
-
-    /// <summary>
-    /// Maps ServiceWorkerUser entity to ServiceWorkerSearchResultDto
-    /// </summary>
-    private static ServiceWorkerSearchResultDto MapToSearchResultDto(ServiceWorkerUser serviceWorker, double distance)
-    {
-        var dto = new ServiceWorkerSearchResultDto
-        {
-            Id = serviceWorker.Id,
-            UserId = serviceWorker.UserId.ToString(),
-            FirstName = serviceWorker.User.FirstName,
-            LastName = serviceWorker.User.LastName,
-            Email = serviceWorker.User.Email ?? string.Empty,
-            PhoneNumber = serviceWorker.User.PhoneNumber,
-            DateOfBirth = serviceWorker.User.DateOfBirth,
-            Gender = serviceWorker.User.Gender,
-            Bio = serviceWorker.User.Bio,
-            ProfilePicturePath = serviceWorker.User.ProfilePicturePath,
-            StreetAddress = serviceWorker.User.StreetAddress,
-            City = serviceWorker.User.City,
-            Country = serviceWorker.User.Country,
-            PostalCode = serviceWorker.User.PostalCode,
-            Latitude = serviceWorker.User.Latitude ?? serviceWorker.Latitude,
-            Longitude = serviceWorker.User.Longitude ?? serviceWorker.Longitude,
-            Services = serviceWorker.Services,
-            Languages = serviceWorker.Languages,
-            HourlyRate = serviceWorker.HourlyRate,
-            DistanceKm = distance == 9999 ? null : Math.Round(distance, 2),
-            AverageRating = null, // TODO: Calculate when review system is implemented
-            ReviewCount = 0, // TODO: Count when review system is implemented
-            IsAvailable = true, // TODO: Implement availability system
-            IsVerified = serviceWorker.User.EmailConfirmed,
-            JoinedDate = serviceWorker.CreatedAt,
-            LastActiveDate = serviceWorker.User.UpdatedAt
-        };
-
-        return dto;
     }
 }

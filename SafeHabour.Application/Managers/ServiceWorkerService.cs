@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SafeHabour.Application.Interfaces;
 using SafeHabour.Data.Entities;
 using SafeHabour.Infrastructure.Interfaces;
 using SafeHabour.Models.Response;
 using SafeHabour.Models.Requests;
+using SafeHabour.Models.Configuration;
 
 namespace SafeHabour.Application.Managers;
 
@@ -13,15 +15,18 @@ public class ServiceWorkerService : IServiceWorkerService
     private readonly IServiceWorkerRepository _serviceWorkerRepository;
     private readonly UserManager<User> _userManager;
     private readonly ILogger<ServiceWorkerService> _logger;
+    private readonly AppSettings _appSettings;
 
     public ServiceWorkerService(
         IServiceWorkerRepository serviceWorkerRepository,
         UserManager<User> userManager,
-        ILogger<ServiceWorkerService> logger)
+        ILogger<ServiceWorkerService> logger,
+        IOptions<AppSettings> appSettings)
     {
         _serviceWorkerRepository = serviceWorkerRepository;
         _userManager = userManager;
         _logger = logger;
+        _appSettings = appSettings.Value;
     }
 
     /// <summary>
@@ -65,7 +70,7 @@ public class ServiceWorkerService : IServiceWorkerService
             }
 
             // Execute search through repository
-            var searchResult = await _serviceWorkerRepository.SearchServiceWorkersAsync(searchRequest, currentUserId);
+            var searchResult = await _serviceWorkerRepository.SearchServiceWorkersAsync(searchRequest, currentUserId, _appSettings.BaseUrl);
 
             if (searchResult == null)
             {

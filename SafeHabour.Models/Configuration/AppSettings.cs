@@ -2,6 +2,7 @@ namespace SafeHabour.Models.Configuration;
 
 public class AppSettings
 {
+    public string BaseUrl { get; set; } = string.Empty;
     public ConnectionStrings ConnectionStrings { get; set; } = new();
     public JwtSettings JwtSettings { get; set; } = new();
     public SendGridSettings SendGrid { get; set; } = new();
