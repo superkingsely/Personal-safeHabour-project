@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using SafeHabour.Data.Entities;
 using SafeHabour.Models.Enums;
 
 namespace SafeHabour.Data.Seeders;
 
 public static class RoleSeeder
 {
-    public static async Task SeedRolesAsync(RoleManager<IdentityRole<Guid>> roleManager, ILogger logger)
+    public static async Task SeedRolesAsync(RoleManager<UserRole> roleManager, ILogger logger)
     {
         logger.LogInformation("Starting role seeding process...");
 
@@ -24,12 +25,15 @@ public static class RoleSeeder
                 var roleExists = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExists)
                 {
-                    var role = new IdentityRole<Guid>
+                    var role = new UserRole
                     {
                         Id = Guid.NewGuid(),
                         Name = roleName,
                         NormalizedName = roleName.ToUpper(),
-                        ConcurrencyStamp = Guid.NewGuid().ToString()
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true,
+                        Description = GetRoleDescription(roleName)
                     };
 
                     var result = await roleManager.CreateAsync(role);
@@ -55,5 +59,16 @@ public static class RoleSeeder
         }
 
         logger.LogInformation("Role seeding process completed.");
+    }
+
+    private static string GetRoleDescription(string roleName)
+    {
+        return roleName switch
+        {
+            UserType.SuperAdmin => "Administrator with full system access",
+            UserType.ClientUser => "Client who posts jobs and hires service workers",
+            UserType.ServiceWorker => "Service worker who applies for and completes jobs",
+            _ => "System role"
+        };
     }
 }
