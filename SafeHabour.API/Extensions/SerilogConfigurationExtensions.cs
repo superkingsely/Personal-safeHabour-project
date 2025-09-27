@@ -18,73 +18,85 @@ public static class SerilogConfigurationExtensions
         builder.Services.Configure<SerilogSettings>(
             configuration.GetSection(SerilogSettings.SectionName));
         
-        // Build a temporary service provider to get the settings
-        var tempServiceProvider = builder.Services.BuildServiceProvider();
-        var serilogSettings = tempServiceProvider.GetRequiredService<IOptions<SerilogSettings>>().Value;
-        
-        // Get connection string
-        var connectionString = configuration.GetConnectionString(serilogSettings.Database?.ConnectionStringName ?? "DefaultConnection");
-        
-        // Create logger configuration
-        var loggerConfiguration = new LoggerConfiguration()
-            .MinimumLevel.Is(ParseLogLevel(serilogSettings.MinimumLevel))
-            .Enrich.FromLogContext()
-            .Enrich.WithMachineName()
-            .Enrich.WithEnvironmentName()
-            .Enrich.WithProcessId()
-            .Enrich.WithThreadId()
-            .Enrich.WithClientIp();
-        
         // Register HttpContextAccessor for the enricher
         builder.Services.AddHttpContextAccessor();
         
-        // Add minimum level overrides
-        foreach (var (source, level) in serilogSettings.MinimumLevelOverrides)
+        // Configure the builder to use Serilog
+        builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
         {
-            loggerConfiguration.MinimumLevel.Override(source, ParseLogLevel(level));
-        }
-        
-        // Configure Console sink
-        if (serilogSettings.Console?.Enabled == true)
-        {
-            loggerConfiguration.WriteTo.Console(
-                restrictedToMinimumLevel: ParseLogLevel(serilogSettings.Console.RestrictedToMinimumLevel),
-                outputTemplate: serilogSettings.Console.OutputTemplate);
-        }
-        
-        // Configure File sink
-        if (serilogSettings.File?.Enabled == true)
-        {
-            var fileSettings = serilogSettings.File;
-            loggerConfiguration.WriteTo.File(
-                path: fileSettings.Path,
-                restrictedToMinimumLevel: ParseLogLevel(fileSettings.RestrictedToMinimumLevel),
-                rollingInterval: ParseRollingInterval(fileSettings.RollingInterval),
-                retainedFileCountLimit: fileSettings.RetainedFileCountLimit,
-                fileSizeLimitBytes: fileSettings.FileSizeLimitBytes,
-                outputTemplate: fileSettings.OutputTemplate);
-        }
-        
-        // Configure Database sink
-        if (serilogSettings.Database?.Enabled == true && !string.IsNullOrEmpty(connectionString))
-        {
-            var dbSettings = serilogSettings.Database;
-            var columnOptions = GetColumnOptions();
+            // Build a temporary service provider to get the settings
+            var serviceProvider = builder.Services.BuildServiceProvider();
+            var serilogSettings = serviceProvider.GetRequiredService<IOptions<SerilogSettings>>().Value;
             
-            loggerConfiguration.WriteTo.MSSqlServer(
-                connectionString: connectionString,
-                sinkOptions: new MSSqlServerSinkOptions
+            // Get connection string
+            var connectionString = configuration.GetConnectionString(serilogSettings.Database?.ConnectionStringName ?? "DefaultConnection");
+            
+            // Configure logger
+            loggerConfiguration
+                .MinimumLevel.Is(ParseLogLevel(serilogSettings.MinimumLevel))
+                .Enrich.FromLogContext()
+                .Enrich.WithMachineName()
+                .Enrich.WithEnvironmentName()
+                .Enrich.WithProcessId()
+                .Enrich.WithThreadId()
+                .Enrich.WithClientIp();
+            
+            // Add minimum level overrides
+            foreach (var (source, level) in serilogSettings.MinimumLevelOverrides)
+            {
+                loggerConfiguration.MinimumLevel.Override(source, ParseLogLevel(level));
+            }
+            
+            // Configure Console sink
+            if (serilogSettings.Console?.Enabled == true)
+            {
+                loggerConfiguration.WriteTo.Console(
+                    restrictedToMinimumLevel: ParseLogLevel(serilogSettings.Console.RestrictedToMinimumLevel),
+                    outputTemplate: serilogSettings.Console.OutputTemplate);
+            }
+            
+            // Configure File sink
+            if (serilogSettings.File?.Enabled == true)
+            {
+                var fileSettings = serilogSettings.File;
+                loggerConfiguration.WriteTo.File(
+                    path: fileSettings.Path,
+                    restrictedToMinimumLevel: ParseLogLevel(fileSettings.RestrictedToMinimumLevel),
+                    rollingInterval: ParseRollingInterval(fileSettings.RollingInterval),
+                    retainedFileCountLimit: fileSettings.RetainedFileCountLimit,
+                    fileSizeLimitBytes: fileSettings.FileSizeLimitBytes,
+                    outputTemplate: fileSettings.OutputTemplate);
+            }
+            
+            // Configure Database sink - only if database exists
+            if (serilogSettings.Database?.Enabled == true && !string.IsNullOrEmpty(connectionString))
+            {
+                try
                 {
-                    TableName = dbSettings.TableName,
-                    SchemaName = dbSettings.SchemaName,
-                    AutoCreateSqlTable = dbSettings.AutoCreateSqlTable
-                },
-                columnOptions: columnOptions,
-                restrictedToMinimumLevel: ParseLogLevel(dbSettings.RestrictedToMinimumLevel));
-        }
-      
-        // Clean up temporary service provider
-        tempServiceProvider.Dispose();
+                    var dbSettings = serilogSettings.Database;
+                    var columnOptions = GetColumnOptions();
+                    
+                    loggerConfiguration.WriteTo.MSSqlServer(
+                        connectionString: connectionString,
+                        sinkOptions: new MSSqlServerSinkOptions
+                        {
+                            TableName = dbSettings.TableName,
+                            SchemaName = dbSettings.SchemaName,
+                            AutoCreateSqlTable = dbSettings.AutoCreateSqlTable
+                        },
+                        columnOptions: columnOptions,
+                        restrictedToMinimumLevel: ParseLogLevel(dbSettings.RestrictedToMinimumLevel));
+                }
+                catch (Exception)
+                {
+                    // If database connection fails during startup, skip database logging
+                    // This allows EF migrations to run properly
+                }
+            }
+            
+            // Clean up temporary service provider
+            serviceProvider.Dispose();
+        });
     }
     
     private static LogEventLevel ParseLogLevel(string level)

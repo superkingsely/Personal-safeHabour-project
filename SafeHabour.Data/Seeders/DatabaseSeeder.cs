@@ -25,7 +25,7 @@ public static class DatabaseSeeder
         {
             using var scope = serviceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<UserRole>>();
             var context = scope.ServiceProvider.GetRequiredService<ApiDbContext>();
 
             // Ensure database is created
@@ -78,7 +78,7 @@ public static class DatabaseSeeder
         try
         {
             using var scope = serviceProvider.CreateScope();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<UserRole>>();
 
             await RoleSeeder.SeedRolesAsync(roleManager, logger);
 
