@@ -51,7 +51,7 @@ public class ApiDbContext : IdentityDbContext<User, UserRole, Guid>
             entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Description).IsRequired().HasMaxLength(2000);
             entity.Property(e => e.Budget).HasColumnType("decimal(18,2)");
-            
+
             // Configure relationship with User (Client)
             entity.HasOne(e => e.Client)
                   .WithMany(u => u.PostedJobs)
@@ -284,45 +284,6 @@ public class ApiDbContext : IdentityDbContext<User, UserRole, Guid>
             entity.HasIndex(e => e.CreatedAt);
             entity.HasIndex(e => e.ExpiresAt);
         });
-
-        // Seed default roles
-        SeedRoles(builder);
     }
 
-    private void SeedRoles(ModelBuilder builder)
-    {
-        var clientRoleId = Guid.NewGuid();
-        var serviceWorkerRoleId = Guid.NewGuid();
-        var adminRoleId = Guid.NewGuid();
-
-        builder.Entity<UserRole>().HasData(
-            new UserRole
-            {
-                Id = clientRoleId,
-                Name = "Client",
-                NormalizedName = "CLIENT",
-                Description = "Client who posts jobs and hires service workers",
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            },
-            new UserRole
-            {
-                Id = serviceWorkerRoleId,
-                Name = "ServiceWorker",
-                NormalizedName = "SERVICEWORKER",
-                Description = "Service worker who applies for and completes jobs",
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            },
-            new UserRole
-            {
-                Id = adminRoleId,
-                Name = "Admin",
-                NormalizedName = "ADMIN",
-                Description = "Administrator with full system access",
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            }
-        );
-    }
 }
