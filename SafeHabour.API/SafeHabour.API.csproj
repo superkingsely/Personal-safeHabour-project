@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../SafeHabour.Application/SafeHabour.Application.csproj" />
+    <ProjectReference Include="..\SafeHabour.Data\SafeHabour.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

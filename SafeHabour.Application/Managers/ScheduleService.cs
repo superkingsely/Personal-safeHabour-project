@@ -51,11 +51,16 @@ namespace SafeHabour.Application.Managers
             await _repo.DeleteAsync(id);
         }
 
-        public async Task<ScheduleResponse> GetWorkerSchedulesForDayAsync(Guid workerId, DayOfWeek dayOfWeek)
-        {
-            var list = await _repo.GetByWorkerAndDayAsync(workerId, dayOfWeek);
-            return list.Select(Map).OrderBy(s => s.StartTime).FirstOrDefault() ?? null!;
-        }
+        // public async Task<ScheduleResponse> GetWorkerSchedulesForDayAsync(Guid workerId, DayOfWeek dayOfWeek)
+        // {
+        //     var list = await _repo.GetByWorkerAndDayAsync(workerId, dayOfWeek);
+        //     return list.Select(Map).OrderBy(s => s.StartTime).FirstOrDefault() ?? null!;
+        // }
+        public async Task<IEnumerable<ScheduleResponse>> GetWorkerSchedulesForDayAsync(Guid workerId, DayOfWeek dayOfWeek)
+{
+    var list = await _repo.GetByWorkerAndDayAsync(workerId, dayOfWeek);
+    return list.Select(Map).OrderBy(s => s.StartTime);
+}
 
         public async Task<IEnumerable<ScheduleResponse>> GetWorkerSchedulesAsync(Guid workerId)
         {
@@ -91,15 +96,16 @@ namespace SafeHabour.Application.Managers
             return Map(existing);
         }
 
-        private static ScheduleResponse Map(Schedule e) => new()
+       private static ScheduleResponse Map(Schedule e) => new()
         {
             Id = e.Id,
             ServiceWorkerId = e.ServiceWorkerId,
-            DayOfWeek = e.DayOfWeek,
+            DayOfWeek = e.DayOfWeek.ToString(),   // ✅ Convert enum → string
             StartTime = e.StartTime.ToString("HH:mm"),
             EndTime = e.EndTime.ToString("HH:mm"),
             IsAvailable = e.IsAvailable,
             Notes = e.Notes
         };
+
     }
 }

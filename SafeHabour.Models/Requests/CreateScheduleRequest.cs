@@ -1,17 +1,10 @@
-using System;
-
-namespace SafeHabour.Models.Requests
+// CreateScheduleRequest.cs
+public class CreateScheduleRequest
 {
-    public class CreateScheduleRequest
-    {
-        public Guid ServiceWorkerId { get; set; }
-        public DayOfWeek DayOfWeek { get; set; }
-
-        // Use string "HH:mm" for JSON compatibility
-        public string StartTime { get; set; } = default!; 
-        public string EndTime { get; set; } = default!;
-
-        public bool IsAvailable { get; set; } = true;
-        public string? Notes { get; set; }
-    }
+    public Guid ServiceWorkerId { get; set; }
+    public DayOfWeek DayOfWeek { get; set; }
+    public string StartTime { get; set; } = string.Empty; // client sends string
+    public string EndTime { get; set; } = string.Empty;
+    public bool IsAvailable { get; set; } = true;
+    public string? Notes { get; set; }
 }

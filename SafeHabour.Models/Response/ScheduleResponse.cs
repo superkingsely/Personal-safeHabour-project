@@ -1,15 +1,12 @@
-using System;
-
-namespace SafeHabour.Models.Response
+// ScheduleResponse.cs
+public class ScheduleResponse
 {
-    public class ScheduleResponse
-    {
-        public Guid Id { get; set; }
-        public Guid ServiceWorkerId { get; set; }
-        public DayOfWeek DayOfWeek { get; set; }
-        public string StartTime { get; set; } = default!; // "08:00"
-        public string EndTime { get; set; } = default!;
-        public bool IsAvailable { get; set; }
-        public string? Notes { get; set; }
-    }
+    public Guid Id { get; set; }
+    public Guid ServiceWorkerId { get; set; }
+    public string DayOfWeek { get; set; } = string.Empty;
+    public string StartTime { get; set; } = string.Empty;
+    public string EndTime { get; set; } = string.Empty;
+    public bool IsAvailable { get; set; }
+    public string? Notes { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

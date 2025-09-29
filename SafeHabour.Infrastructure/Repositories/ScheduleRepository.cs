@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SafeHabour.Data;
+using SafeHabour.Data.Data;
 using SafeHabour.Data.Entities;
 using SafeHabour.Infrastructure.Interfaces;
 
@@ -11,8 +11,8 @@ namespace SafeHabour.Infrastructure.Repositories
 {
     public class ScheduleRepository : IScheduleRepository
     {
-        private readonly SafeHabourDbContext _db;
-        public ScheduleRepository(SafeHabourDbContext db) => _db = db;
+        private readonly ApiDbContext _db;
+        public ScheduleRepository(ApiDbContext db) => _db = db;
 
         public async Task AddAsync(Schedule schedule)
         {

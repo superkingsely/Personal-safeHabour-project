@@ -2,46 +2,48 @@ using SafeHabour.Data.Entities;
 using SafeHabour.Models.Requests;
 using SafeHabour.Models.Response;
 
-namespace SafeHabour.Data.DTOMapper.Schedule;
-
-public static class ScheduleMapper
+namespace SafeHabour.Data.DTOMapper
 {
-    public static ScheduleResponse ToResponse(Schedule entity)
+    public static class ScheduleMapper
     {
-        return new ScheduleResponse
+        public static ScheduleResponse ToResponse(Schedule entity)
         {
-            Id = entity.Id,
-            ServiceWorkerId = entity.ServiceWorkerId,
-            DayOfWeek = entity.DayOfWeek.ToString(),
-            StartTime = entity.StartTime.ToString("HH:mm"),
-            EndTime = entity.EndTime.ToString("HH:mm"),
-            IsAvailable = entity.IsAvailable,
-            Notes = entity.Notes,
-            CreatedAt = entity.CreatedAt
-        };
-    }
+            return new ScheduleResponse
+            {
+                Id = entity.Id,
+                ServiceWorkerId = entity.ServiceWorkerId,
+                DayOfWeek = entity.DayOfWeek.ToString(),
+                StartTime = entity.StartTime.ToString("HH:mm"), // TimeOnly -> string
+                EndTime = entity.EndTime.ToString("HH:mm"),     // TimeOnly -> string
+                IsAvailable = entity.IsAvailable,
+                Notes = entity.Notes,
+                CreatedAt = entity.CreatedAt
+            };
+        }
 
-    public static Schedule ToEntity(ScheduleRequest request)
-    {
-        return new Schedule
+        public static Schedule ToEntity(CreateScheduleRequest dto)
         {
-            Id = Guid.NewGuid(),
-            ServiceWorkerId = request.ServiceWorkerId,
-            DayOfWeek = request.DayOfWeek,
-            StartTime = request.StartTime,
-            EndTime = request.EndTime,
-            IsAvailable = true,
-            Notes = request.Notes,
-            CreatedAt = DateTime.UtcNow
-        };
-    }
+            return new Schedule
+            {
+                Id = Guid.NewGuid(),
+                ServiceWorkerId = dto.ServiceWorkerId,
+                DayOfWeek = dto.DayOfWeek,
+                StartTime = TimeOnly.Parse(dto.StartTime), // string -> TimeOnly
+                EndTime = TimeOnly.Parse(dto.EndTime),     // string -> TimeOnly
+                IsAvailable = dto.IsAvailable,
+                Notes = dto.Notes,
+                CreatedAt = DateTime.UtcNow
+            };
+        }
 
-    public static void UpdateEntityFromRequest(Schedule entity, ScheduleRequest request)
-    {
-        entity.DayOfWeek = request.DayOfWeek;
-        entity.StartTime = request.StartTime;
-        entity.EndTime = request.EndTime;
-        entity.Notes = request.Notes;
-        entity.UpdatedAt = DateTime.UtcNow;
+        public static void UpdateEntityFromDto(Schedule entity, CreateScheduleRequest dto)
+        {
+            entity.DayOfWeek = dto.DayOfWeek;
+            entity.StartTime = TimeOnly.Parse(dto.StartTime); // string -> TimeOnly
+            entity.EndTime = TimeOnly.Parse(dto.EndTime);     // string -> TimeOnly
+            entity.IsAvailable = dto.IsAvailable;
+            entity.Notes = dto.Notes;
+            entity.UpdatedAt = DateTime.UtcNow;
+        }
     }
 }
