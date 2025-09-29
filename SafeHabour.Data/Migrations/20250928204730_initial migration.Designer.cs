@@ -12,8 +12,8 @@ using SafeHabour.Data.Data;
 namespace SafeHabour.Data.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20250923113917_AddLocationCoordinates")]
-    partial class AddLocationCoordinates
+    [Migration("20250928204730_initial migration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -563,17 +563,23 @@ namespace SafeHabour.Data.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("HourlyRate")
-                        .HasColumnType("int");
+                    b.Property<decimal>("HourlyRate")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Languages")
+                    b.Property<string>("LanguagesJson")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("PostalCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Services")
+                    b.Property<string>("ServicesJson")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -930,35 +936,6 @@ namespace SafeHabour.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("UserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("f5be8be6-6bf8-4645-9b09-d123fa9f2562"),
-                            CreatedAt = new DateTime(2025, 9, 23, 11, 39, 17, 78, DateTimeKind.Utc).AddTicks(4730),
-                            Description = "Client who posts jobs and hires service workers",
-                            IsActive = true,
-                            Name = "Client",
-                            NormalizedName = "CLIENT"
-                        },
-                        new
-                        {
-                            Id = new Guid("8a5a63e3-8f4e-447b-b8ba-d59ab908b0c2"),
-                            CreatedAt = new DateTime(2025, 9, 23, 11, 39, 17, 78, DateTimeKind.Utc).AddTicks(4730),
-                            Description = "Service worker who applies for and completes jobs",
-                            IsActive = true,
-                            Name = "ServiceWorker",
-                            NormalizedName = "SERVICEWORKER"
-                        },
-                        new
-                        {
-                            Id = new Guid("3834f013-3d07-4b10-915f-7f47c369d4cd"),
-                            CreatedAt = new DateTime(2025, 9, 23, 11, 39, 17, 78, DateTimeKind.Utc).AddTicks(4730),
-                            Description = "Administrator with full system access",
-                            IsActive = true,
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

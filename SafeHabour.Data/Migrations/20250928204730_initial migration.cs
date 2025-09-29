@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace SafeHabour.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTwoFactorAuthenticationSupport : Migration
+    public partial class initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,9 +36,20 @@ namespace SafeHabour.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    Bio = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    ProfilePicturePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    StreetAddress = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Country = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    PostalCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Latitude = table.Column<double>(type: "float", nullable: true),
+                    Longitude = table.Column<double>(type: "float", nullable: true),
                     IsProfileComplete = table.Column<bool>(type: "bit", nullable: false),
                     IsVerified = table.Column<bool>(type: "bit", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsProfileApproved = table.Column<bool>(type: "bit", nullable: false),
                     IsTwoFactorAuthenticationEnabled = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -229,6 +238,38 @@ namespace SafeHabour.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PushNotifications",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Priority = table.Column<int>(type: "int", nullable: false),
+                    Data = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    ActionUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    IconUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    RequiresAction = table.Column<bool>(type: "bit", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    IsDelivered = table.Column<bool>(type: "bit", nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReadAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeliveredAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PushNotifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PushNotifications_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Schedules",
                 columns: table => new
                 {
@@ -264,9 +305,11 @@ namespace SafeHabour.Data.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Services = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Languages = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HourlyRate = table.Column<int>(type: "int", nullable: false),
+                    ServicesJson = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LanguagesJson = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HourlyRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Latitude = table.Column<double>(type: "float", nullable: true),
+                    Longitude = table.Column<double>(type: "float", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -544,16 +587,6 @@ namespace SafeHabour.Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.InsertData(
-                table: "UserRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "CreatedAt", "Description", "IsActive", "Name", "NormalizedName", "UpdatedAt" },
-                values: new object[,]
-                {
-                    { new Guid("69e0ebae-cee0-42e1-8421-f6db376bed4a"), null, new DateTime(2025, 9, 22, 14, 53, 53, 652, DateTimeKind.Utc).AddTicks(1750), "Service worker who applies for and completes jobs", true, "ServiceWorker", "SERVICEWORKER", null },
-                    { new Guid("9044a6c7-aa57-4297-92c5-f4c731f926fc"), null, new DateTime(2025, 9, 22, 14, 53, 53, 652, DateTimeKind.Utc).AddTicks(1760), "Administrator with full system access", true, "Admin", "ADMIN", null },
-                    { new Guid("aef7c927-cbd5-467d-98a5-0d398514f7a4"), null, new DateTime(2025, 9, 22, 14, 53, 53, 652, DateTimeKind.Utc).AddTicks(1750), "Client who posts jobs and hires service workers", true, "Client", "CLIENT", null }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Applications_JobId",
                 table: "Applications",
@@ -629,6 +662,26 @@ namespace SafeHabour.Data.Migrations
                 name: "IX_Payments_ServiceWorkerId",
                 table: "Payments",
                 column: "ServiceWorkerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PushNotifications_CreatedAt",
+                table: "PushNotifications",
+                column: "CreatedAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PushNotifications_ExpiresAt",
+                table: "PushNotifications",
+                column: "ExpiresAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PushNotifications_UserId",
+                table: "PushNotifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PushNotifications_UserId_IsRead",
+                table: "PushNotifications",
+                columns: new[] { "UserId", "IsRead" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_JobId",
@@ -742,6 +795,9 @@ namespace SafeHabour.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Disputes");
+
+            migrationBuilder.DropTable(
+                name: "PushNotifications");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

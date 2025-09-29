@@ -12,8 +12,8 @@ using SafeHabour.Data.Data;
 namespace SafeHabour.Data.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20250923152904_UpdateServiceWorkerUsersTable")]
-    partial class UpdateServiceWorkerUsersTable
+    [Migration("20250929144723_SyncFeatureWithMain")]
+    partial class SyncFeatureWithMain
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -936,35 +936,6 @@ namespace SafeHabour.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("UserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("2b013dc2-2b4f-476f-8668-34f7558f9274"),
-                            CreatedAt = new DateTime(2025, 9, 23, 15, 29, 3, 978, DateTimeKind.Utc).AddTicks(7820),
-                            Description = "Client who posts jobs and hires service workers",
-                            IsActive = true,
-                            Name = "Client",
-                            NormalizedName = "CLIENT"
-                        },
-                        new
-                        {
-                            Id = new Guid("63d62fc7-26df-49e9-b3e2-6ba806c1f6b9"),
-                            CreatedAt = new DateTime(2025, 9, 23, 15, 29, 3, 978, DateTimeKind.Utc).AddTicks(7820),
-                            Description = "Service worker who applies for and completes jobs",
-                            IsActive = true,
-                            Name = "ServiceWorker",
-                            NormalizedName = "SERVICEWORKER"
-                        },
-                        new
-                        {
-                            Id = new Guid("0b827df4-e8b6-49fd-a75d-09fbf5aa0262"),
-                            CreatedAt = new DateTime(2025, 9, 23, 15, 29, 3, 978, DateTimeKind.Utc).AddTicks(7820),
-                            Description = "Administrator with full system access",
-                            IsActive = true,
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
