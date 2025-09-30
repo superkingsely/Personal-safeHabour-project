@@ -49,6 +49,10 @@ public static class DependencyInjection
         services.AddScoped<IClientUserService, ClientUserService>();
         services.AddScoped<IServiceWorkerService, ServiceWorkerService>();
 
+        // add repository and service dependencies
+        services.AddScoped<IScheduleRepository, ScheduleRepository>();
+        services.AddScoped<IScheduleService, ScheduleService>();
+
         return services;
     }
 
