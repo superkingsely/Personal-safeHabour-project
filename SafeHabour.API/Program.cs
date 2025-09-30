@@ -26,9 +26,7 @@ builder.ConfigureSerilog();
 
 // Add services to the container.
 
-// add repository and service dependencies
-builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
-builder.Services.AddScoped<IScheduleService, ScheduleService>();
+
 // Add Database Context
 builder.Services.AddDbContext<ApiDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
