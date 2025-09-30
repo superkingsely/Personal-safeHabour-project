@@ -1,8 +1,6 @@
-
 using Microsoft.AspNetCore.Mvc;
 using SafeHabour.Application.Interfaces;
 using SafeHabour.Models.Requests;
-using SafeHabour.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 
 namespace SafeHabour.API.Controllers
@@ -14,10 +12,7 @@ namespace SafeHabour.API.Controllers
     {
         private readonly IScheduleService _service;
 
-        public SchedulesController(IScheduleService service)
-        {
-            _service = service;
-        }
+        public SchedulesController(IScheduleService service) => _service = service;
 
         [HttpPost]
         public async Task<IActionResult> CreateSchedule([FromBody] CreateScheduleRequest request)
@@ -25,42 +20,123 @@ namespace SafeHabour.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _service.CreateScheduleAsync(request);
-            return Ok(result);
+            var response = await _service.CreateScheduleAsync(request);
+            return response.Success ? Ok(response) : BadRequest(response);
         }
 
         [HttpGet("{workerId:guid}")]
         public async Task<IActionResult> GetWorkerSchedules(Guid workerId)
         {
-            var result = await _service.GetWorkerSchedulesAsync(workerId);
-            return Ok(result);
+            var response = await _service.GetWorkerSchedulesAsync(workerId);
+            return response.Success ? Ok(response) : NotFound(response);
         }
 
         [HttpGet("{workerId:guid}/day/{dayOfWeek}")]
         public async Task<IActionResult> GetWorkerSchedulesForDay(Guid workerId, DayOfWeek dayOfWeek)
         {
-            var result = await _service.GetWorkerSchedulesForDayAsync(workerId, dayOfWeek);
-            return Ok(result);
+            var response = await _service.GetWorkerSchedulesByDayAsync(workerId, dayOfWeek);
+            return response.Success ? Ok(response) : NotFound(response);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateSchedule(Guid id, [FromBody] CreateScheduleRequest request)
+        public async Task<IActionResult> UpdateSchedule(Guid id, [FromBody] UpdateScheduleRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _service.UpdateScheduleAsync(id, request);
-            return Ok(result);
+            var response = await _service.UpdateScheduleAsync(id, request);
+            return response.Success ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteSchedule(Guid id)
         {
-            await _service.DeleteScheduleAsync(id);
-            return NoContent();
+            var response = await _service.DeleteScheduleAsync(id);
+            return response.Success ? NoContent() : BadRequest(response);
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// using Microsoft.AspNetCore.Mvc;
+// using SafeHabour.Application.Interfaces;
+// using SafeHabour.Models.Requests;
+// using SafeHabour.Models.Response;
+// using Microsoft.AspNetCore.Authorization;
+
+// namespace SafeHabour.API.Controllers
+// {
+//     [Authorize(Roles = "ServiceWorker")]
+//     [ApiController]
+//     [Route("api/[controller]")]
+//     public class SchedulesController : ControllerBase
+//     {
+//         private readonly IScheduleService _service;
+
+//         public SchedulesController(IScheduleService service)
+//         {
+//             _service = service;
+//         }
+
+//         [HttpPost]
+//         public async Task<IActionResult> CreateSchedule([FromBody] CreateScheduleRequest request)
+//         {
+//             if (!ModelState.IsValid)
+//                 return BadRequest(ModelState);
+
+//             var result = await _service.CreateScheduleAsync(request);
+//             return Ok(result);
+//         }
+
+//         [HttpGet("{workerId:guid}")]
+//         public async Task<IActionResult> GetWorkerSchedules(Guid workerId)
+//         {
+//             var result = await _service.GetWorkerSchedulesAsync(workerId);
+//             return Ok(result);
+//         }
+
+//         [HttpGet("{workerId:guid}/day/{dayOfWeek}")]
+//         public async Task<IActionResult> GetWorkerSchedulesForDay(Guid workerId, DayOfWeek dayOfWeek)
+//         {
+//             var result = await _service.GetWorkerSchedulesForDayAsync(workerId, dayOfWeek);
+//             return Ok(result);
+//         }
+
+//         [HttpPut("{id:guid}")]
+//         public async Task<IActionResult> UpdateSchedule(Guid id, [FromBody] CreateScheduleRequest request)
+//         {
+//             if (!ModelState.IsValid)
+//                 return BadRequest(ModelState);
+
+//             var result = await _service.UpdateScheduleAsync(id, request);
+//             return Ok(result);
+//         }
+
+//         [HttpDelete("{id:guid}")]
+//         public async Task<IActionResult> DeleteSchedule(Guid id)
+//         {
+//             await _service.DeleteScheduleAsync(id);
+//             return NoContent();
+//         }
+//     }
+// }
 
 
 
