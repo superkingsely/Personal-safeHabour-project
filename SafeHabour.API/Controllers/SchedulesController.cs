@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using SafeHabour.Application.Interfaces;
 using SafeHabour.Models.Requests;
 using SafeHabour.Models.Response;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SafeHabour.API.Controllers
 {
+    [Authorize(Roles = "ServiceWorker")]
     [ApiController]
     [Route("api/[controller]")]
     public class SchedulesController : ControllerBase
